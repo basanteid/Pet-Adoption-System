@@ -3,7 +3,7 @@
 //قللو global variables على اد ما تقدرو
 #include <iostream>
 using namespace std;
-bool request_decision; // used to know if user wants to purchase or not
+bool request_decision; //JOHN begin // used to know if user wants to purchase or not
 const int no_pets = 5;
 struct pet
 {
@@ -21,7 +21,7 @@ bool user_request()
         cout << "\nyour request has been sent successfully..please wait for response soon";
 
     return user_request; // 1 if he wants to purchase 0 if not
-}
+}//John end
 
 void main()
 {
