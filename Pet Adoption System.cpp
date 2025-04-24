@@ -304,7 +304,8 @@ void main()
         cout << "2. Update Pet" << endl;
         cout << "3. Delete Pet" << endl;
         cout << "4. Display Pets" << endl;
-        cout << "5. Exit" << endl;
+	cout << "5. View Request History" << "\n";
+        cout << "6. Exit" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
 
@@ -322,6 +323,9 @@ void main()
                 displayPets();
                 break;
             case 5:
+	 	handleUserInteraction();
+		break;
+	    case 6: 
                 return 0;
             default:
                 cout << "Invalid choice. Please try again." << endl;
