@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <cstring>
+#include <string>
+#include <vector>
 using namespace std;
 bool request_decision; // used to know if user wants to purchase or not
 const int no_pets = 5;
@@ -50,11 +52,6 @@ bool user_request(int i,int j)
 
 //John end
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-#include <iostream>
-#include <vector>
-#include <string>
-
-using namespace std;
 
 struct Pet
  {
@@ -185,7 +182,8 @@ void displayPets() {
     }
 }
 
-int main() {
+void main()
+{
     int choice;
     while (true) {
         cout << "1. Add Pet" << endl;
@@ -216,11 +214,6 @@ int main() {
         }
     }
 
-    return 0;
+    system ("pause");
 }  //BASMALA end 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void main()
-{
-	//متحطوش حاجة هنا غير الفنكشن النهائية لكل جزء بس
-}
