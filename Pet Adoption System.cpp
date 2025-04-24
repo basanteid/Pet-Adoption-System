@@ -1,6 +1,7 @@
 ﻿//كله يحط شغله هنا واسمه جمب كل حاجة عاملها 
 //محدش يعدل في شغل حد حتا لو في ايرورز انا هتصرف
 //قللو global variables على اد ما تقدرو
+
 #include <iostream>
 #include <cstring>
 using namespace std;
@@ -36,6 +37,7 @@ bool user_request(int i,int j)
     cin >> request_arr[i].date.month;
     cout << " ";
     cin >> request_arr[i].date.year;
+
     cout << "your pet is : " << pets[j].name << endl; // user will search for a specific pet so i means the pet he wants
     cout << "pet price is : " << pets[j].price << endl;
     cout << "Do you want to purchase this pet?(yes or no) \t";
@@ -45,6 +47,7 @@ bool user_request(int i,int j)
 
     return user_request; // 1 if he wants to purchase 0 if not
 }
+
 //John end
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
