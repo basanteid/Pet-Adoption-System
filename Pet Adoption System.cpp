@@ -8,8 +8,7 @@
 #include <vector>
 using namespace std;
 
-
-bool request_decision; // used to know if user wants to purchase or not
+bool request_decision; //JOHN begin // used to know if user wants to purchase or not
 const int no_pets = 5;
 const int no_requests = 5;
 
@@ -55,7 +54,7 @@ bool user_request(int i,int j)
 //John end
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-struct Pet
+struct Pet //Basmala begin
  {
     int pet_Id;
     string name;
@@ -182,9 +181,11 @@ void displayPets() {
         pet.displayPet();
         cout << endl;
     }
-} //basmala
+} //Basmala end
 
-//alaa 
+//====================================================================================
+
+//Alaa begin 
 pet pets[100];
 void display_pet_info(pet pets[], int index)
 {
@@ -224,9 +225,77 @@ void pet_search(pet pets[], int petcount)
 	if (!found)
 		cout << "No Pets Match Your Search\n";
 
-}//alaa
+}//Alaa end
 
-bool request_decision; //JOHN begin // used to know if user wants to purchase or not
+//==================================================================================================
+
+//Hazem begin
+struct AdoptionRequest { 
+    int requestID;
+    int userID;
+    int petID;
+    string status;
+    string date;
+};
+
+// Function to display all requests
+void displayRequests(AdoptionRequest requests[], int count) {
+    if (count == 0) {
+        cout << "No adoption requests yet.\n";
+        return;
+    }
+
+    cout << "\n--- Adoption Request History ---\n";
+    for (int i = 0; i < count; ++i) {
+        cout << "Request ID: " << requests[i].requestID << endl;
+        cout << "User ID: " << requests[i].userID << endl;
+        cout << "Pet ID: " << requests[i].petID << endl;
+        cout << "Status: " << requests[i].status << endl;
+        cout << "Date: " << requests[i].date << endl;
+        cout << "-----------------------------\n";
+    }
+}
+
+// Function to add a new adoption request
+void addRequest(AdoptionRequest requests[], int& count, int maxRequests) {
+    if (count >= maxRequests) {
+        cout << "Max request limit reached!\n";
+        return;
+    }
+
+    AdoptionRequest newRequest;
+    cout << "Enter Request ID: ";
+    cin >> newRequest.requestID;
+    cout << "Enter User ID: ";
+    cin >> newRequest.userID;
+    cout << "Enter Pet ID: ";
+    cin >> newRequest.petID;
+    cout << "Enter Date (e.g. 2025-04-23): ";
+    cin >> newRequest.date;
+    newRequest.status = "Pending";
+
+    requests[count++] = newRequest;
+}
+
+// Function to handle user interaction
+void handleUserInteraction() {
+    const int MAX_REQUESTS = 100;
+    AdoptionRequest requests[MAX_REQUESTS];
+    int count = 0;
+    char choice;
+
+    do {
+        addRequest(requests, count, MAX_REQUESTS);
+        displayRequests(requests, count);
+        cout << "Do you want to add another request? (y/n): ";
+        cin >> choice;
+    } while (choice == 'y' || choice == 'Y');
+
+    cout << "Thank you! Exiting...\n";
+} //Hazem end
+
+//============================================================================================
+
 void main()
 {
     int choice;
@@ -260,5 +329,5 @@ void main()
     }
 
     system ("pause");
-}  //BASMALA end 
+}  //BASMALA 
 
