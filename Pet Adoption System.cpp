@@ -6,9 +6,129 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include <fstream>
 using namespace std;
 
-bool request_decision; //JOHN begin // used to know if user wants to purchase or not
+//Hind begin
+struct User {
+    string username;
+    string password;
+};
+
+const int MAX_USERS = 10;
+User users[MAX_USERS];
+int userCount = 0;
+
+void loadUsers();
+void saveUsers();
+void registerUser();
+bool loggingin();
+void menu();
+
+// Loads user data from file at startup
+void loadUsers() {
+    ifstream file("users.txt");
+    if (!file) {
+        cout << "No existing user data found. Starting fresh." << endl;
+        return;
+    }
+
+    userCount = 0;
+    while (file >> users[userCount].username >> users[userCount].password) {
+        userCount++;
+        if (userCount >= MAX_USERS) break;
+    }
+
+    file.close();
+}
+
+// Saves all user data before exiting
+void saveUsers() {
+    string username, password;
+    ofstream file("users.txt", ios::app);
+    if (!file) {
+        cout << "Error saving user data!" << endl;
+        return;
+    }
+
+    for (int i = 0; i < userCount; i++) {
+        file << users[i].username << " " << users[i].password << endl;
+    }
+
+    file.close();
+}
+
+
+// Handles user registration
+void registerUser() {
+    if (userCount >= MAX_USERS) {
+        cout << "User limit reached! Cannot register more users." << endl;
+        return;
+    }
+
+    cout << "Select a username: ";
+    cin >> users[userCount].username;
+
+    cout << "Select a password: ";
+    cin >> users[userCount].password;
+
+    userCount++;
+    cout << "User registered successfully!" << endl;
+}
+
+// Handles user login
+bool loggingin() {
+    string username, password;
+
+    cout << "Enter username: ";
+    cin >> username;
+
+    cout << "Enter password: ";
+    cin >> password;
+
+    for (int i = 0; i < userCount; i++) {
+        if (users[i].username == username && users[i].password == password) {
+            return true;
+        }
+    }
+
+    cout << "Incorrect Information. Try Again." << endl;
+    return false;
+}
+
+// Displays menu and processes user choices
+void menu() {
+    int choice;
+    bool running = true;
+
+    while (running) {
+        cout << "\nSelect a choice:\n1: Register\n2: Login\n3: Exit\nYour choice: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            registerUser();
+        }
+        else if (choice == 2) {
+            if (loggingin()) {
+                cout << "Login successful!" << endl;
+            }
+        }
+        else if (choice == 3) {
+            saveUsers();
+            cout << "Goodbye!" << endl;
+            running = false;
+        }
+        else {
+            cout << "Invalid choice. Try again." << endl;
+        }
+    }
+} //Hind end
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//John begin
+bool request_decision; // used to know if user wants to purchase or not
 const int no_pets = 5;
 const int no_requests = 5;
 
@@ -52,9 +172,11 @@ bool user_request(int i,int j)
 }
 
 //John end
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-struct Pet //Basmala begin
+//Basmala begin
+struct Pet 
  {
     int pet_Id;
     string name;
@@ -183,7 +305,7 @@ void displayPets() {
     }
 } //Basmala end
 
-//====================================================================================
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Alaa begin 
 pet pets[100];
@@ -227,7 +349,7 @@ void pet_search(pet pets[], int petcount)
 
 }//Alaa end
 
-//==================================================================================================
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Hazem begin
 struct AdoptionRequest { 
@@ -294,38 +416,48 @@ void handleUserInteraction() {
     cout << "Thank you! Exiting...\n";
 } //Hazem end
 
-//============================================================================================
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void main()
 {
     int choice;
     while (true) {
-        cout << "1. Add Pet" << endl;
-        cout << "2. Update Pet" << endl;
-        cout << "3. Delete Pet" << endl;
-        cout << "4. Display Pets" << endl;
-	cout << "5. View Request History" << "\n";
-        cout << "6. Exit" << endl;
+	cout << "1. Register" << "\n";
+	cout << "2. Login" << "\n";
+        cout << "3. Add Pet" << endl;
+        cout << "4. Update Pet" << endl;
+        cout << "5. Delete Pet" << endl;
+        cout << "6. Display Pets" << endl;
+	cout << "7. View Request History" << "\n";
+        cout << "8. Exit" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
 
         switch (choice) {
-            case 1:
+	    case 1:
+         	registerUser();
+         	break;
+	    case 2:
+         	if (loggingin()) {
+    			cout << "Login successful!" << endl;
+			}
+        	break;
+            case 3:
                 addPet();
                 break;
-            case 2:
+            case 4:
                 updatePet();
                 break;
-            case 3:
+            case 5:
                 deletePet();
                 break;
-            case 4:
+            case 6:
                 displayPets();
                 break;
-            case 5:
+            case 7:
 	 	handleUserInteraction();
 		break;
-	    case 6: 
+	    case 8: 
                 return 0;
             default:
                 cout << "Invalid choice. Please try again." << endl;
@@ -333,5 +465,5 @@ void main()
     }
 
     system ("pause");
-}  //BASMALA 
+}  //Basmala,Basant
 
