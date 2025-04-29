@@ -1,4 +1,4 @@
-//Latest Update 29/4/2025   5:57AM
+//Latest Update 30/4/2025  2:12AM
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -6,7 +6,7 @@
 #include <fstream>
 using namespace std;
 
-
+void GetLineforStrings(string& s);
 void loadDatabase();
 void saveDatabase();
 void savePets(int petCount);
@@ -26,6 +26,7 @@ void registerUser(int& userCount);
 bool Userlogin(int userCount);
 void UserMenuLevel1();
 void UserMenuLevel2(int choiceLevel2);
+void UserMenuLevel1caretaker();
 
 void Add_Pet();
 void Update_Pet();
@@ -45,6 +46,7 @@ int petCount = 0;
 int userCount = 0;
 int requestCount = 0;
 int LoggedUserID = 0;
+bool LoggedUserRole = 0;
 
 struct Pet
 {
@@ -110,6 +112,11 @@ void saveUsers(int userCount) {
     file.close();
 }
 
+void GetLineforStrings(string &s)
+{
+    cin.ignore(); //da ashan n-clear everything for the getline to work properly
+    getline(cin, s); // we used getline ashan lw eluser used spaces elsystem my3mlsh ignore lel part after space
+}
 
 // Handles user registration
 void registerUser(int& userCount) {
@@ -120,7 +127,7 @@ void registerUser(int& userCount) {
     cout << "select your role (0 for caretaker || 1 for adopter): ";
     cin >> users[userCount].role;
     cout << "select a username: ";
-    cin >> users[userCount].username;
+    GetLineforStrings(users[userCount].username);
     cout << "enter ID: ";
     cin >> users[userCount].ID;
     cout << "select a password: ";
@@ -146,7 +153,11 @@ bool Userlogin(int userCount) {
     for (int i = 0; i < userCount; i++) {
         if (users[i].username == username && users[i].password == password) {
             LoggedUserID = users[i].ID;
-            UserMenuLevel1();
+            LoggedUserRole = users[i].role;
+            if (LoggedUserRole)
+                UserMenuLevel1();
+            else
+                UserMenuLevel1caretaker();      
          
             return true;
         }
@@ -182,7 +193,7 @@ void Add_Pet()
         cin >> pets[petCount].breed;
         if (cin.fail())
             cout << "INVALID CHOICE!!";
-        cout << "Enter Pet Health status (1 for Good , 0 for Bad ) : " << "\n";
+        cout << "Enter Pet Health status (1 for Healthy , 0 for Unhealthy) : " << "\n";
         int h;
         cin >> h;
         if (cin.fail())
@@ -282,7 +293,7 @@ void Display_Pets()
             cout << " Age: " << pets[i].age << "\n";
             cout << " Breed: " << pets[i].breed << "\n";
             cout << "Pet Health Status: " << (pets[i].health_Status ? "Healthy" : "Unhealthy") << endl;
-            cout << "Pet " << i + 1 << " Species: " << "\t" << pets[i].species << "\n";
+            cout << "Pet " << i + 1 << " Species: " << pets[i].species << "\n";
             cout << (pets[i].availability ? "Pet Available" : "Pet Not Available") << endl;
         }
     }
@@ -637,7 +648,7 @@ bool AdminLogin()
     return false;
 }
 
-void UserMenuLevel1()
+void UserMenuLevel1()//adopter
 {
     int choiceLevel2;
     do {
@@ -654,6 +665,22 @@ void UserMenuLevel1()
             cout << "INVALID CHOICE!!\n";
         UserMenuLevel2(choiceLevel2);
     } while (choiceLevel2 == 1 || choiceLevel2 == 2 || choiceLevel2 == 3 || choiceLevel2 == 4);
+}
+void UserMenuLevel1caretaker()
+{
+    int choiceLevel2;
+    do {
+
+        cout << "Welcome User\n";
+        cout << "Select Your Action\n";
+        cout << "1) Display All Pets\n";
+        cout << "Any number to Exit\n";
+        cin >> choiceLevel2;
+        if (cin.fail())
+            cout << "INVALID CHOICE!!\n";
+        if (choiceLevel2 == 1)
+            UserMenuLevel2(choiceLevel2);
+    } while (choiceLevel2 == 1);
 }
 void UserMenuLevel2(int choiceLevel2)
 {
@@ -714,15 +741,15 @@ void loadRequests()
 }
 void loadDatabase()
 {
-    loadUsers();
-    loadPets();
-    loadRequests();
+    //loadUsers();
+    /*loadPets();
+    loadRequests();*/
 }
 void saveDatabase()
 {
-    saveUsers(userCount);
-    savePets(petCount);
-    saveRequests(requestCount);
+    //saveUsers(userCount);
+    /*savePets(petCount);
+    saveRequests(requestCount);*/
 }
 
 void main()
