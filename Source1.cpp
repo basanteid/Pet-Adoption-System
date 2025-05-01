@@ -1,4 +1,4 @@
-//Latest Update 30/4/2025  2:12AM
+//Latest Update 1/5/2025  5:41AM
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -7,14 +7,9 @@
 using namespace std;
 
 void GetLineforStrings(string& s);
-void loadDatabase();
-void saveDatabase();
-void savePets(int petCount);
-void loadPets();
-void saveRequests(int requestCount);
-void loadRequests();
-void loadUsers();
-void saveUsers(int userCount);
+void HandleIntErrors(int& i);
+void HandleIntErrors(long long& i);
+void HandleBoolErrors(bool& i);
 
 void MenuLevel2(int choice);
 
@@ -22,12 +17,13 @@ bool AdminLogin();
 void AdminMenuLevel1();
 void AdminMenuLevel2(int choiceLevel2);
 
-void registerUser(int& userCount);
+bool registerUser(int& userCount);
 bool Userlogin(int userCount);
 void UserMenuLevel1();
 void UserMenuLevel2(int choiceLevel2);
 void UserMenuLevel1caretaker();
 
+void InitializePets();
 void Add_Pet();
 void Update_Pet();
 void Display_Pets();
@@ -38,11 +34,12 @@ void New_Adoption_Request();
 void Display_All_Requests(int& requestCount);
 void Display_Pending_Requests(int& requestCount);
 void Modify_Request_Status();
+void ShiftPets(int index);
 void Remove_Pet(int petid);
 void Requests_Management_Menu();
 
 const int MAX = 100;
-int petCount = 0;
+int petCount = 5;
 int userCount = 0;
 int requestCount = 0;
 int LoggedUserID = 0;
@@ -54,10 +51,10 @@ struct Pet
     string name;
     int age;
     string breed;
-    bool health_Status;
+    bool health_Status; //1=healthy  0=unhealthy
     string species;
-    bool availability;
-}pets[MAX];// array of pets we have
+    bool availability; //1=available  0= unavailable
+}pets[MAX];
 
 struct AdoptionRequest {
     int requestID;
@@ -70,74 +67,162 @@ struct AdoptionRequest {
 
 struct User {
     string username;
+    int ID;
     bool role; //1=adopter 0=caretaker
     string password;
     string email;
     long long phone;
-    int ID;
 } users[MAX];
 
-//Hind begin
-// Loads user data from file at startup
-void loadUsers() {
-    ifstream file("users.txt");
-    if (!file) {
-        cout << "No existing user data found. Starting fresh." << endl;
-        return;
-    }
 
-    file >> userCount;
-    while (file >> users[userCount].role >> users[userCount].username >> users[userCount].password) {
-
-        userCount++;
-        if (userCount >= MAX) break;
-    }
-
-    file.close();
-}
-
-// Saves all user data before exiting
-void saveUsers(int userCount) {
-    string username, password;
-    ofstream file("users.txt", ios::app);
-    if (!file) {
-        cout << "Error saving user data!" << endl;
-        return;
-    }
-    file << userCount << endl;
-    for (int i = 0; i < userCount; i++) {
-        file << users[userCount].role<< users[i].username << " " << users[i].password << endl;
-    }
-
-    file.close();
-}
-
-void GetLineforStrings(string &s)
+void GetLineforStrings(string &s) //!!!!!! fiha moshkla sa3at it ignores 1st character of the input ||| used it once fel user experience
 {
     cin.ignore(); //da ashan n-clear everything for the getline to work properly
     getline(cin, s); // we used getline ashan lw eluser used spaces elsystem my3mlsh ignore lel part after space
 }
 
+void HandleIntErrors(int& i)
+{
+    while (true)
+    {
+        cin >> i;
+
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << "INVALID!! Please enter an Integer: ";
+
+        }
+        else
+            break;
+    }
+}
+void HandleIntErrors(long long& i)
+{
+    while (true)
+    {
+        cin >> i;
+
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << "INVALID!! Please enter an Integer: ";
+
+        }
+        else
+            break;
+    }
+}
+void HandleBoolErrors(bool& i)
+{
+    while (true)
+    {
+        cin >> i;
+
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << "INVALID!! Please enter 0 or 1: ";
+
+        }
+        else
+            break;
+    }
+}
+
+void InitializePets()
+{
+    //Pet 1
+    pets[0].id = 111;
+    pets[0].name = "MAX";
+    pets[0].species = "dog";
+    pets[0].breed = "husky";
+    pets[0].age = 2;
+    pets[0].health_Status = 1;
+    pets[0].availability = 1;
+
+    //Pet 2
+    pets[1].id = 222;
+    pets[1].name = "REX";
+    pets[1].species = "dog";
+    pets[1].breed = "bulldog";
+    pets[1].age = 5;
+    pets[1].health_Status = 0;
+    pets[1].availability = 1;
+
+    //Pet 3
+    pets[2].id = 333;
+    pets[2].name = "LUNA";
+    pets[2].species = "cat";
+    pets[2].breed = "siamese";
+    pets[2].age = 3;
+    pets[2].health_Status = 1;
+    pets[2].availability = 0;
+
+    //Pet 4
+    pets[3].id = 444;
+    pets[3].name = "KITTY";
+    pets[3].species = "cat";
+    pets[3].breed = "ragdoll";
+    pets[3].age = 1;
+    pets[3].health_Status = 0;
+    pets[3].availability = 1;
+
+    //Pet 5
+    pets[4].id = 555;
+    pets[4].name = "DORIS";
+    pets[4].species = "turtle";
+    pets[4].breed = "musk";
+    pets[4].age = 6;
+    pets[4].health_Status = 1;
+    pets[4].availability = 0;
+}
+
+//Hind begin
+
 // Handles user registration
-void registerUser(int& userCount) {
+bool registerUser(int& userCount) {
     if (userCount >= MAX) {
         cout << "User limit reached! Cannot register more users." << endl;
-        return;
+        return false;
     }
     cout << "select your role (0 for caretaker || 1 for adopter): ";
-    cin >> users[userCount].role;
+    HandleBoolErrors(users[userCount].role);
     cout << "select a username: ";
-    GetLineforStrings(users[userCount].username);
+    cin >> users[userCount].username;
+    for (int i = 0; i < userCount; i++)
+    {
+        if (users[i].username == users[userCount].username)
+        {
+            cout << "Username Already Taken! Try Registering again with different Username\n";
+            return false;
+        }
+    }
     cout << "enter ID: ";
-    cin >> users[userCount].ID;
+    HandleIntErrors(users[userCount].ID);
+
+    for (int i = 0; i < userCount ; i++)
+    {
+        if (users[i].ID == users[userCount].ID)
+        {
+            cout << "ID Already Taken! Try Registering again with different ID\n";
+            return false;
+        }
+    }
     cout << "select a password: ";
-    cin >> users[userCount].password;
+    cin>>users[userCount].password;
     cout << "enter email: ";
-    cin >> users[userCount].email;
+    cin>>users[userCount].email;
     cout << "enter phone number: ";
-    cin >> users[userCount].phone;
-    cout << "User registered successfully! Now, you can login." << endl;
+    HandleIntErrors(users[userCount].phone);
+    cout << "User registered successfully!" << endl;
+    cout << "==================================================================\n\n"; 
+    cout<<"Now, you can login." << endl;
     userCount++;
+    return true;
 }
 
 //// Handles user login
@@ -145,25 +230,26 @@ bool Userlogin(int userCount) {
     string username, password;
 
     cout << "Enter username: ";
-    cin >> username;
+    cin>>username;
 
     cout << "Enter password: ";
-    cin >> password;
+    cin>>password;
 
     for (int i = 0; i < userCount; i++) {
         if (users[i].username == username && users[i].password == password) {
             LoggedUserID = users[i].ID;
             LoggedUserRole = users[i].role;
+            cout << "==================================================================\n\n";
             if (LoggedUserRole)
                 UserMenuLevel1();
             else
                 UserMenuLevel1caretaker();      
-         
             return true;
         }
     }
 
     cout << "Incorrect Information. Try Again." << endl;
+    cout << "==================================================================\n\n";
     return false;
 }
 
@@ -177,47 +263,63 @@ bool Userlogin(int userCount) {
 ////Basmala begin
 void Add_Pet()
 {
-    if (petCount < MAX - 1)
+    if (petCount < MAX )
     {
         cout << "Enter Pet ID: " << "\n";
         cin >> pets[petCount].id;
-        if (cin.fail())
-            cout << "INVALID CHOICE!!";
+        for (int i = 0; i < petCount; i++)
+        {
+            if (pets[i].id == pets[userCount].id)
+            {
+                cout << "ID Already Taken! Try adding a pet again with different ID\n";
+                return;
+            }
+        }
         cout << "Enter Pet Name: " << "\n";
-        cin >> pets[petCount].name;
+        cin>>pets[petCount].name;
         cout << "Enter Pet Age: " << "\n";
         cin >> pets[petCount].age;
-        if (cin.fail())
-            cout << "INVALID CHOICE!!";
         cout << "Enter Pet Breed: " << "\n";
-        cin >> pets[petCount].breed;
-        if (cin.fail())
-            cout << "INVALID CHOICE!!";
+        cin>>pets[petCount].breed;
         cout << "Enter Pet Health status (1 for Healthy , 0 for Unhealthy) : " << "\n";
         int h;
         cin >> h;
-        if (cin.fail())
-            cout << "INVALID CHOICE!!";
+        while (h != 0 && h != 1)
+        {
+            cout << "Invalid. Status must be 0 or 1\n";
+            cout << "Enter Pet Health status (1 for Healthy , 0 for Unhealthy) : " << "\n";
+            cin >> h;
+        }
         pets[petCount].health_Status = (h == 1);
         cout << "Enter Pet Species : " << "\n";
         cin >> pets[petCount].species;
         cout << "Enter Pet Availability (1 for Available , 0 for Not Available ) : " << "\n";
         int av;
         cin >> av;
-        if (cin.fail())
-            cout << "INVALID CHOICE!!";
+        while (av != 0 && av != 1)
+        {
+            cout << "Invalid. Availability must be 0 or 1\n";
+            cout << "Enter Pet Availability (1 for Available , 0 for Not Available ) : " << "\n";
+            cin >> av;
+        }
         pets[petCount].availability = (av == 1);
         petCount++;
         cout << "Pet Added successfully!" << "\n";
+        cout << "==================================================================\n\n";
     }
     else
     {
         cout << "The stock is full!" << "\n";
+        cout << "==================================================================\n\n";
     }
 
 }
 void Update_Pet()
 {
+    if (petCount == 0) {
+        cout << "No pets available yet.\n";
+        return;
+    }
     int id;
     cout << "Enter Pet ID to update: " << "\n";
 
@@ -235,8 +337,6 @@ void Update_Pet()
             cout << "5) Availability\n";
 
             cin >> choiceUpdate;
-            if (cin.fail())
-                cout << "Invalid Choice";
             switch (choiceUpdate)
             {
             case 1:
@@ -246,8 +346,6 @@ void Update_Pet()
             case 2:
                 cout << "Enter new Pet Age: ";
                 cin >> pets[i].age;
-                if (cin.fail())
-                    cout << "Invalid Age!";
                 break;
             case 3:
                 cout << "Enter new Pet Breed: ";
@@ -257,68 +355,89 @@ void Update_Pet()
                 cout << "Enter new Pet Health status (1 for Healthy , 0 for Unhealthy): ";
                 int h;
                 cin >> h;
-                if (cin.fail())
-                    cout << "INVALID CHOICE!!";
                 pets[i].health_Status = (h == 1);
                 break;
             case 5:
-                cout << "Enter new Pet Availability (1 for Available , 0 for Not Available): " ;
+                cout << "Enter new Pet Availability (1 for Available , 0 for Not Available): ";
                 int av;
                 cin >> av;
-                if (cin.fail())
-                    cout << "INVALID CHOICE!!";
                 pets[i].availability = (av == 1);
                 break;
             default:
                 cout << "INVALID CHOICE!!";
             }
             cout << "Pet updated successfully!" << "\n";
-        }
-        else
-        {
-            cout << "Pet Not Found!" << "\n";
+            cout << "==================================================================\n\n";
+            return;
         }
     }
-    return;
+    cout << "Pet Not Found!" << "\n";
+    cout << "==================================================================\n\n";
+
 }
 void Display_Pets()
 {
+    if (petCount == 0) {
+        cout << "No pets available yet.\n";
+        cout << "==================================================================\n\n";
+        return;
+    }
     for (int i = 0; i < petCount; i++)
     {
         if (pets[i].id != 0)
         {
-            cout << "--Pet " << i + 1 << "--";
-            cout << " ID: " << pets[i].id << "\n";
-            cout << " Name: " << pets[i].name << "\n";
-            cout << " Age: " << pets[i].age << "\n";
-            cout << " Breed: " << pets[i].breed << "\n";
-            cout << "Pet Health Status: " << (pets[i].health_Status ? "Healthy" : "Unhealthy") << endl;
-            cout << "Pet " << i + 1 << " Species: " << pets[i].species << "\n";
+            cout << "--Pet " << i + 1 << "--\n";
+            cout << "ID: " << pets[i].id << "\n";
+            cout << "Name: " << pets[i].name << "\n";
+            cout << "Age: " << pets[i].age << "\n";
+            cout << "Breed: " << pets[i].breed << "\n";
+            cout << "Health Status: " << (pets[i].health_Status ? "Healthy" : "Unhealthy") << endl;
+            cout << "Species: " << pets[i].species << "\n";
             cout << (pets[i].availability ? "Pet Available" : "Pet Not Available") << endl;
+            cout << "===================================\n";
         }
+    }
+}
+void ShiftPets(int index)
+{
+    for (int i = index; i < petCount; i++)
+    {
+        pets[i].id = pets[1 + i].id;
+        pets[i].name = pets[1 + i].name;
+        pets[i].species = pets[1 + i].species;
+        pets[i].breed = pets[1 + i].breed;
+        pets[i].age = pets[1 + i].age;
+        pets[i].health_Status = pets[1 + i].health_Status;
+        pets[i].availability = pets[1 + i].availability;
     }
 }
 void Remove_Pet()
 {
+    if (petCount == 0) {
+        cout << "No pets available yet.\n";
+        cout << "==================================================================\n\n";
+        return;
+    }
     int id;
     cout << "Enter Pet ID to remove: " << "\n";
 
     cin >> id;
-    if (cin.fail())
-        cout << "Invalid ID.";
 
     for (int i = 0; i < petCount; i++)
     {
         if (pets[i].id == id)
         {
             pets[i].id = 0;
+            ShiftPets(i);
             petCount--;
             cout << "Pet Removed Successfuly!" << "\n";
-            break;
+            cout << "==================================================================\n\n";
+            return;
         }
     }
+
     cout << "Incorrect ID!" << "\n";
-    return;
+    cout << "==================================================================\n\n";
 }
 
 ////Basmala end
@@ -334,6 +453,7 @@ void Display_One_Pet( int index)
     cout << "Pet Breed:" << pets[index].breed << endl;
     cout << "Pet Health Status: " << (pets[index].health_Status ? "Healthy" : "Unhealthy") << endl;
     cout << (pets[index].availability ? "Pet Available" : "Pet Not Available") << endl;
+    cout << "==================================================================\n\n";
 
 }
 
@@ -341,7 +461,6 @@ void Pet_Search(int petCount)
 {
     string Dspecies, Dbreed;
     int maxage;
-    bool found = false;
     cout << "Please Enter The Desired Species (Dog, Cat, Bird,...):\n ";//taking pet info
     cin >> Dspecies;
     cout << "Please Enter The Desired Breed (Husky, Siamese,...):\n ";
@@ -357,12 +476,12 @@ void Pet_Search(int petCount)
         {
             cout << "Your Desired Pet Is Found \n";
             Display_One_Pet(i); //displaying the found pet info
-            found = true;
-            break;
+            return;
         }
     }
-    if (!found)
-        cout << "No Pets Match Your Search\n";
+    cout << "No Pets Match Your Search\n";
+    cout << "==================================================================\n\n";
+
 }
 //Alaa end
 //
@@ -370,8 +489,13 @@ void Pet_Search(int petCount)
 //
 ////Hazem begin
 //
- void Display_Request_byUserID()
+void Display_Request_byUserID()
 {
+    if (requestCount == 0) {
+        cout << "No adoption requests yet.\n";
+        return;
+    }
+
     bool found = false;
     for (int i = 0; i < requestCount; i++)
     {
@@ -382,10 +506,14 @@ void Pet_Search(int petCount)
             cout << "Pet ID: " << Requests[i].petID << endl;
             cout << "Request Date: " << Requests[i].date << endl;
             cout << "Request Status: " << Requests[i].status << endl;
+            cout << "==================================================================\n\n";
         }
     }
     if (!found)
+    {
         cout << "No adoption requests yet!";
+        cout << "==================================================================\n\n";
+    }
 }
  //Hazem end
  
@@ -397,6 +525,7 @@ void New_Adoption_Request()
 {
     if (requestCount>=MAX) {
         cout << "Max request limit reached!\n";
+        cout << "==================================================================\n\n";
         return;
     }
     int petIDsearch;
@@ -419,7 +548,7 @@ void New_Adoption_Request()
                 Requests[requestCount].petID = pets[i].id;
                 Requests[requestCount].requestID = requestCount;
                 Requests[requestCount].status = "Pending";
-                cout << "Congrats! Your Adoption Request has been submitted.\n";
+                cout << "Congrats! Your Adoption Request has been submitted.\n\n";
                 cout << "Your Request Info:\n";
                 cout << "Request Id:" << Requests[requestCount].requestID << endl;
                 cout << "Request Date: " << Requests[requestCount].date << endl;
@@ -427,8 +556,9 @@ void New_Adoption_Request()
                 cout << "Request Status: " << Requests[requestCount].status << endl;
                 cout << "Check Requests History to keep updated about your request status\n";
                 cout << "Finally, Tell Us About Your Experience: ";
-                cin >> Requests[requestCount].experience;
-                cout << "Thank You!";
+                GetLineforStrings(Requests[requestCount].experience);
+                cout << "Thank You!\n";
+                cout << "==================================================================\n\n";
                 requestCount++;
                 break;
             }
@@ -436,7 +566,10 @@ void New_Adoption_Request()
         }
     }
     if (!found)
+    {
         cout << "Sorry! Pet Not Found.\n";
+        cout << "==================================================================\n\n";
+    }
 }
 
 // Function to display all requests
@@ -444,6 +577,7 @@ void Display_All_Requests(int& requestCount)
 {
     if (requestCount == 0) {
         cout << "No adoption requests yet.\n";
+        cout << "==================================================================\n\n";
         return;
     }
 
@@ -456,6 +590,7 @@ void Display_All_Requests(int& requestCount)
         cout << "Status: " << Requests[i].status << endl;
         cout << "Date: " << Requests[i].date << endl;
         cout << "User Experience: " << Requests[i].experience << endl;
+        cout << "==================================================================\n";
     }
 }
 
@@ -464,6 +599,7 @@ void Display_Pending_Requests(int& requestCount)
     bool found = false;
     if (requestCount == 0) {
         cout << "No adoption requests yet.\n";
+        cout << "==================================================================\n\n";
         return;
     }
 
@@ -478,21 +614,34 @@ void Display_Pending_Requests(int& requestCount)
             cout << "Status: " << Requests[i].status << endl;
             cout << "Date: " << Requests[i].date << endl;
             cout << "User Experience: " << Requests[i].experience << endl;
+            cout << "==================================================================\n";
         }
-        if (!found)
-            cout << "No Pending Requests\n";
+    }
+    if (!found)
+    {
+        cout << "No Pending Requests\n";
+        cout << "==================================================================\n\n";
     }
 }
 void Remove_Pet(int petid)
 {
+    bool found = false;
     for (int i = 0; i < petCount; i++)
     {
         if (pets[i].id == petid)
         {
+            found = true;
             pets[i].id = 0;
             petCount--;
+            cout << "Pet Removed Successfully!\n";
+            cout << "==================================================================\n\n";
             break;
         }
+    }
+    if (!found)
+    {
+        cout << "Pet Not Found\n";
+        cout << "==================================================================\n\n";
     }
 }
 void Modify_Request_Status() 
@@ -515,30 +664,34 @@ void Modify_Request_Status()
 
             cout << "Do you want to Accept or Reject? ";
             cin >> Requests[i].status;
-            if (Requests[i].status == "Accept")
+            if (Requests[i].status == "Accept"|| Requests[i].status == "accept")
             {
                 Requests[i].status = "Accepted";
                 Remove_Pet(Requests[i].petID);
                 cout << "Request " << Requests[i].status << " Successfully!\n";
 
             }
-            else if (Requests[i].status == "Reject")
+            else if (Requests[i].status == "Reject"|| Requests[i].status == "reject")
                 Requests[i].status = "Rejected";
             else
                 "Invalid Modification!\n";
 
+            cout << "==================================================================\n\n";
             return;
         }
     }
     if (!found)
+    {
         cout << "Request Id Not Found";
+        cout << "==================================================================\n\n";
+    }
 }
 void Requests_Management_Menu() 
 {
+    cout << "==================================================================\n\n";
     int choice;
     do {
 
-        cout << "Welcome Admin\n";
         cout << "Select Your Action\n";
         cout << "1) View All Requests\n";
         cout << "2) View Pending Requests ONLY\n";
@@ -564,10 +717,11 @@ void Requests_Management_Menu()
 
 void AdminMenuLevel1()
 {
+    cout << "==================================================================\n\n";
+    cout << "Welcome Admin\n";
     int choiceLevel2;
     do {
 
-        cout << "Welcome Admin\n";
         cout << "Select Your Action\n";
         cout << "1) Pet Stock Management\n";
         cout << "2) Requests Management\n";
@@ -583,6 +737,7 @@ void AdminMenuLevel1()
 
 void AdminMenuLevel2(int choiceLevel2)
 {
+    cout << "==================================================================\n\n";
     int choicePetManagement;
     switch (choiceLevel2)
     {
@@ -650,10 +805,11 @@ bool AdminLogin()
 
 void UserMenuLevel1()//adopter
 {
+    cout << "==================================================================\n\n";
+    cout << "Welcome Adopter\n";
     int choiceLevel2;
     do {
 
-        cout << "Welcome User\n";
         cout << "Select Your Action\n";
         cout << "1) Display All Pets\n";
         cout << "2) Search for Pet\n";
@@ -668,10 +824,11 @@ void UserMenuLevel1()//adopter
 }
 void UserMenuLevel1caretaker()
 {
+    cout << "==================================================================\n\n";
+    cout << "Welcome Caretaker\n";
     int choiceLevel2;
     do {
 
-        cout << "Welcome User\n";
         cout << "Select Your Action\n";
         cout << "1) Display All Pets\n";
         cout << "Any number to Exit\n";
@@ -712,8 +869,8 @@ void MenuLevel2(int choice)
         break;
     }
     case 2:
-        registerUser(userCount); // Pass userCount as an argument without redeclaring its type
-        Userlogin(userCount);
+        if (registerUser(userCount)) // Pass userCount as an argument without redeclaring its type
+            Userlogin(userCount);
         break;
     case 3:
         Userlogin(userCount); // Pass userCount as an argument without redeclaring its type
@@ -723,38 +880,9 @@ void MenuLevel2(int choice)
     }
 }
 
-void savePets(int petCount)
-{
-
-}
-void loadPets()
-{
-
-}
-void saveRequests(int requestCount)
-{
-
-}
-void loadRequests()
-{
-
-}
-void loadDatabase()
-{
-    //loadUsers();
-    /*loadPets();
-    loadRequests();*/
-}
-void saveDatabase()
-{
-    //saveUsers(userCount);
-    /*savePets(petCount);
-    saveRequests(requestCount);*/
-}
-
 void main()
 {
-    loadDatabase();
+    InitializePets();
     int level1choice;
     do
     {
@@ -764,8 +892,7 @@ void main()
         cout << "3) User Login \n";
         cout << "Any number for Exit \n";
         cin >> level1choice;
-        if (cin.fail())
-            cout << "INCORRECT CHOICE!!\n";
+        cout << "==================================================================\n\n";
         switch (level1choice)
         {
         case 1:
@@ -789,5 +916,4 @@ void main()
         }
 
     } while (level1choice == 1 || level1choice == 2 || level1choice == 3);
-    saveDatabase();
 }
