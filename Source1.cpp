@@ -1,4 +1,4 @@
-//Latest Update 2/5/2025  10:05PM
+//Latest Update 2/5/2025  10:49PM
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -825,7 +825,7 @@ void UserMenuLevel1adopter()
         cout << "1) Display All Pets\n";
         cout << "2) Search for Pet ????\n";
         cout << "3) Submit Adoption Request\n";
-        cout << "4) View All Requests\n";
+        cout << "4) View Requests History\n";
         cout << "Any number to Exit\n";
         HandleIntErrors(choiceLevel2);
         UserMenuLevel2adopter(choiceLevel2);
