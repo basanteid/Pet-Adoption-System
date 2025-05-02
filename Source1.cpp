@@ -22,7 +22,7 @@ void UserMenuLevel1adopter();
 void UserMenuLevel2adopter(int choiceLevel2);
 void UserMenucaretaker();
 
-void InitializePets();
+
 void Add_Pet();
 void Update_Pet();
 void Display_Pets();
@@ -48,13 +48,13 @@ struct Pet
 {
     int id;
     string name;
-    int age;
-    string breed;
-    bool health_Status; //1=healthy  0=unhealthy
     string species;
-    bool availability; //1=available  0= unavailable
+    string breed;
     bool gender;  //1=female  0=male
-}pets[MAX];
+    int age;
+    bool health_Status; //1=healthy  0=unhealthy
+    bool availability; //1=available  0= unavailable
+};
 
 struct AdoptionRequest {
     int requestID;
@@ -73,6 +73,16 @@ struct User {
     string email;
     long long phone;
 } users[MAX];
+
+//Initializing 5 Pets
+Pet pets[MAX] =
+{
+  {111,"MAX","dog","huusky",2,1,1,0 },
+  {222,"MORI","dog","bulldog",5,0,1,1},
+  {333,"LUNA","cat","siamese",3,1,0,1},
+  {444,"KITTY","cat","ragdoll",1,0,1,1},
+  {555,"DORIS","turtle","musk",6,1,0,0},
+};
 
 
 void GetLineforStrings(string &s) //!!!!!! fiha moshkla sa3at it ignores 1st character of the input ||| used it once fel user experience
@@ -133,58 +143,7 @@ void HandleBoolErrors(bool& i)
     }
 }
 
-void InitializePets()
-{
-    //Pet 1
-    pets[0].id = 111;
-    pets[0].name = "MAX";
-    pets[0].species = "dog";
-    pets[0].breed = "husky";
-    pets[0].age = 2;
-    pets[0].health_Status = 1;
-    pets[0].availability = 1;
-    pets[0].gender = 0;
 
-    //Pet 2
-    pets[1].id = 222;
-    pets[1].name = "MORI";
-    pets[1].species = "dog";
-    pets[1].breed = "bulldog";
-    pets[1].age = 5;
-    pets[1].health_Status = 0;
-    pets[1].availability = 1;
-    pets[1].gender = 1;
-
-    //Pet 3
-    pets[2].id = 333;
-    pets[2].name = "LUNA";
-    pets[2].species = "cat";
-    pets[2].breed = "siamese";
-    pets[2].age = 3;
-    pets[2].health_Status = 1;
-    pets[2].availability = 0;
-    pets[2].gender = 1;
-
-    //Pet 4
-    pets[3].id = 444;
-    pets[3].name = "KITTY";
-    pets[3].species = "cat";
-    pets[3].breed = "ragdoll";
-    pets[3].age = 1;
-    pets[3].health_Status = 0;
-    pets[3].availability = 1;
-    pets[3].gender = 1;
-
-    //Pet 5
-    pets[4].id = 555;
-    pets[4].name = "DORIS";
-    pets[4].species = "turtle";
-    pets[4].breed = "musk";
-    pets[4].age = 6;
-    pets[4].health_Status = 1;
-    pets[4].availability = 0;
-    pets[4].gender = 0;
-}
 
 //Hind begin
 
@@ -891,7 +850,6 @@ void MenuLevel2(int choice)
 
 void main()
 {
-    InitializePets();
     int level1choice;
     do
     {
