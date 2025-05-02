@@ -1,4 +1,4 @@
-//Latest Update 2/5/2025  11:55PM
+//Latest Update 2/5/2025  1:24AM
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -673,17 +673,17 @@ void Modify_Request_Status()
 
             cout << "Do you want to Accept or Reject? ";
             cin >> Requests[i].status;
-            if (Requests[i].status == "Accept"|| Requests[i].status == "accept")
+            if (Requests[i].status == "Accept" || Requests[i].status == "accept")
             {
                 Requests[i].status = "Accepted";
                 Remove_Pet(Requests[i].petID);
                 cout << "Request " << Requests[i].status << " Successfully!\n";
 
             }
-            else if (Requests[i].status == "Reject"|| Requests[i].status == "reject")
+            else if (Requests[i].status == "Reject" || Requests[i].status == "reject")
                 Requests[i].status = "Rejected";
             else
-                "Invalid Modification!\n";
+                cout << "Invalid Modification!\n";
 
             cout << "==================================================================\n\n";
             return;
