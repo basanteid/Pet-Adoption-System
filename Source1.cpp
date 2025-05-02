@@ -1,4 +1,4 @@
-//Latest Update 2/5/2025  10:49PM
+//Latest Update 2/5/2025  11:55PM
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -90,7 +90,7 @@ void HandleIntErrors(int& i)
         if (cin.fail())
         {
             cin.clear();
-            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
             cout << "INVALID!! Please enter an Integer: ";
 
         }
@@ -107,7 +107,7 @@ void HandleIntErrors(long long& i)
         if (cin.fail())
         {
             cin.clear();
-            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "INVALID!! Please enter an Integer: ";
 
         }
@@ -124,7 +124,7 @@ void HandleBoolErrors(bool& i)
         if (cin.fail())
         {
             cin.clear();
-            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "INVALID!! Please enter 0 or 1: ";
 
         }
