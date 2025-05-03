@@ -1,4 +1,4 @@
-//Latest Update 2/5/2025  1:24AM
+//Latest Update 2/5/2025  3:42PM
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -215,7 +215,7 @@ bool Userlogin(int userCount) {
         }
     }
 
-    cout << "Your Email or Password is Wrong!!! Try Again." << endl;
+    cout << "Your Username or Password is Wrong!!! Try Again." << endl;
     cout << "==================================================================\n\n";
     return false;
 }
@@ -469,7 +469,7 @@ void Display_Request_byUserID()
         if (Requests[i].userID == LoggedUserID)
         {
             found = true;
-            cout << "-Request " << i << "- \n";
+            cout << "-Request " << i + 1 << "- \n";
             cout << "Request ID: " << Requests[i].requestID << endl;
             cout << "Pet ID: " << Requests[i].petID << endl;
             cout << "Date: " << Requests[i].date << endl;
@@ -552,7 +552,7 @@ void Display_All_Requests(int requestCount)
     cout << "--ALL Requests--\n";
     for (int i = 0; i < requestCount; i++) 
     {
-        cout << "-Request " << i << "-\n";
+        cout << "-Request " << i + 1 << "-\n";
         cout << "Request ID: " << Requests[i].requestID << endl;
         cout << "User ID: " << Requests[i].userID << endl;
         cout << "Pet ID: " << Requests[i].petID << endl;
@@ -576,7 +576,7 @@ void Display_Pending_Requests(int requestCount)
         if (Requests[i].status == "Pending")
         {
             found = true;
-            cout << "-Request " << i << "-\n";
+            cout << "-Request " << i + 1 << "-\n";
             cout << "Request ID: " << Requests[i].requestID << endl;
             cout << "User ID: " << Requests[i].userID << endl;
             cout << "Status: " << Requests[i].status << endl;
