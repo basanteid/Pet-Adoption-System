@@ -1,9 +1,10 @@
-//Latest Update 2/5/2025  3:42PM
+//Latest Update 2/5/2025  9:05PM
 #include <iostream>
 #include <cstring>
 #include <string>
 using namespace std; 
 
+// inputs validation functions
 void GetLineforStrings(string& s);
 void HandleIntErrors(int& i);
 void HandleIntErrors(long long& i);
@@ -50,8 +51,8 @@ struct Pet
     string name;
     string species;
     string breed;
-    bool gender;  //1=female  0=male
     int age;
+    bool gender;  //1=female  0=male
     bool health_Status; //1=healthy  0=unhealthy
     bool availability; //1=available  0= unavailable
 };
@@ -616,6 +617,7 @@ void Modify_Request_Status()
     }
     int requestid;
     bool found = false;
+    bool modification = false;
     cout << "Enter Id of the Request you want to Modify: ";
     HandleIntErrors(requestid);
     for (int i = 0; i < requestCount; i++)
@@ -630,20 +632,17 @@ void Modify_Request_Status()
             cout << "Status: " << Requests[i].status << endl;
             cout << "Date: " << Requests[i].date << endl;
 
-            cout << "Do you want to Accept or Reject? ";
-            cin >> Requests[i].status;
-            if (Requests[i].status == "Accept" || Requests[i].status == "accept")
+            cout << "Do you want to Accept or Reject? (1 to Accept , 0 to Reject) ";
+            HandleBoolErrors(modification);
+            if (modification)
             {
                 Requests[i].status = "Accepted";
                 Remove_Pet(Requests[i].petID);
-                cout << "Request " << Requests[i].status << " Successfully!\n";
-
             }
-            else if (Requests[i].status == "Reject" || Requests[i].status == "reject")
-                Requests[i].status = "Rejected";
             else
-                cout << "Invalid Modification!\n";
+                Requests[i].status = "Rejected";
 
+            cout << "Request " << Requests[i].status << " Successfully!\n";
             cout << "==================================================================\n\n";
             return;
         }
