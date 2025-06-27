@@ -86,9 +86,9 @@ Pet pets[MAX] =
 };
 
 
-void GetLineforStrings(string &s) //!!!!!! fiha moshkla sa3at it ignores 1st character of the input ||| used it once fel user experience
+void GetLineforStrings(string &s) 
 {
-    cin.ignore(); //da ashan n-clear everything for the getline to work properly
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); //da ashan n-clear everything for the getline to work properly
     getline(cin, s); // we used getline ashan lw eluser used spaces elsystem my3mlsh ignore lel part after space
 }
 
@@ -144,9 +144,6 @@ void HandleBoolErrors(bool& i)
     }
 }
 
-
-
-//Hind begin
 
 // Handles user registration
 bool registerUser(int& userCount) {
@@ -221,14 +218,7 @@ bool Userlogin(int userCount) {
     return false;
 }
 
-////Hind end
 
-////John begin
-//???????????????????????????????????????????????
-////John end
-
-
-////Basmala begin
 void Add_Pet()
 {
     if (petCount < MAX)
@@ -403,11 +393,8 @@ void Remove_Pet() //for Admin functionalities
     cout << "==================================================================\n\n";
 }
 
-////Basmala end
-//
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-////Alaa begin 
+
 void Display_One_Pet( int index)
 {
     cout << "--Pet Info--\n";
@@ -451,44 +438,7 @@ void Pet_Search(int petCount)
     return;
 
 }
-//Alaa end
-//
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-////Hazem begin
-//
-void Display_Request_byUserID()
-{
-    if (requestCount == 0) {
-        cout << "No adoption requests yet.\n";
-        return;
-    }
 
-    bool found = false;
-    for (int i = 0; i < requestCount; i++)
-    {
-        if (Requests[i].userID == LoggedUserID)
-        {
-            found = true;
-            cout << "-Request " << i + 1 << "- \n";
-            cout << "Request ID: " << Requests[i].requestID << endl;
-            cout << "Pet ID: " << Requests[i].petID << endl;
-            cout << "Date: " << Requests[i].date << endl;
-            cout << "Status: " << Requests[i].status << endl;
-            cout << "==================================================================\n\n";
-        }
-    }
-    if (!found)
-    {
-        cout << "No adoption requests yet!\n";
-        cout << "==================================================================\n\n";
-    }
-}
- //Hazem end
- 
-////Ahmed begin
-//?????????????????????????????????????
-////Ahmed end
 
 void New_Adoption_Request()
 {
@@ -540,6 +490,95 @@ void New_Adoption_Request()
         cout << "==================================================================\n\n";
     }
 }
+void Remove_Pet(int petid) //for Request Status Modification
+{
+    for (int i = 0; i < petCount; i++)
+    {
+        if (pets[i].id == petid)
+        {
+            pets[i].id = 0;
+            ShiftPets(i);
+            petCount--;
+            return;
+        }
+    }
+
+}
+void Modify_Request_Status()
+{
+    if (requestCount == 0) {
+        cout << "No adoption requests yet.\n";
+        cout << "==================================================================\n\n";
+        return;
+    }
+    int requestid;
+    bool found = false;
+    bool modification = false;
+    cout << "Enter Id of the Request you want to Modify: ";
+    HandleIntErrors(requestid);
+    for (int i = 0; i < requestCount; i++)
+    {
+        if (requestid == Requests[i].requestID)
+        {
+            found = true;
+            cout << "Request no." << i + 1 << " info\n";
+            cout << "Request ID: " << Requests[i].requestID << endl;
+            cout << "User ID: " << Requests[i].userID << endl;
+            cout << "Pet ID: " << Requests[i].petID << endl;
+            cout << "Status: " << Requests[i].status << endl;
+            cout << "Date: " << Requests[i].date << endl;
+
+            cout << "Do you want to Accept or Reject? (1 to Accept , 0 to Reject) ";
+            HandleBoolErrors(modification);
+            if (modification)
+            {
+                Requests[i].status = "Accepted";
+                Remove_Pet(Requests[i].petID);
+            }
+            else
+                Requests[i].status = "Rejected";
+
+            cout << "Request " << Requests[i].status << " Successfully!\n";
+            cout << "==================================================================\n\n";
+            return;
+        }
+    }
+    if (!found)
+    {
+        cout << "Request Id Not Found";
+        cout << "==================================================================\n\n";
+    }
+}
+
+
+void Display_Request_byUserID()
+{
+    if (requestCount == 0) {
+        cout << "No adoption requests yet.\n";
+        return;
+    }
+
+    bool found = false;
+    for (int i = 0; i < requestCount; i++)
+    {
+        if (Requests[i].userID == LoggedUserID)
+        {
+            found = true;
+            cout << "-Request " << i + 1 << "- \n";
+            cout << "Request ID: " << Requests[i].requestID << endl;
+            cout << "Pet ID: " << Requests[i].petID << endl;
+            cout << "Date: " << Requests[i].date << endl;
+            cout << "Status: " << Requests[i].status << endl;
+            cout << "==================================================================\n\n";
+        }
+    }
+    if (!found)
+    {
+        cout << "No adoption requests yet!\n";
+        cout << "==================================================================\n\n";
+    }
+}
+
 
 // Function to display all requests
 void Display_All_Requests(int requestCount) 
@@ -594,65 +633,6 @@ void Display_Pending_Requests(int requestCount)
     }
 }
 
-void Remove_Pet(int petid) //for Request Status Modification
-{
-    for (int i = 0; i < petCount; i++)
-    {
-        if (pets[i].id == petid)
-        {
-            pets[i].id = 0;
-            ShiftPets(i);
-            petCount--;
-            return;
-        }
-    }
-
-}
-void Modify_Request_Status() 
-{
-    if (requestCount == 0) {
-        cout << "No adoption requests yet.\n";
-        cout << "==================================================================\n\n";
-        return;
-    }
-    int requestid;
-    bool found = false;
-    bool modification = false;
-    cout << "Enter Id of the Request you want to Modify: ";
-    HandleIntErrors(requestid);
-    for (int i = 0; i < requestCount; i++)
-    {
-        if (requestid == Requests[i].requestID)
-        {
-            found = true;
-            cout << "Request no." << i << " info\n";
-            cout << "User ID: " << Requests[i].userID << endl;
-            cout << "Request ID: " << Requests[i].requestID << endl;
-            cout << "Pet ID: " << Requests[i].petID << endl;
-            cout << "Status: " << Requests[i].status << endl;
-            cout << "Date: " << Requests[i].date << endl;
-
-            cout << "Do you want to Accept or Reject? (1 to Accept , 0 to Reject) ";
-            HandleBoolErrors(modification);
-            if (modification)
-            {
-                Requests[i].status = "Accepted";
-                Remove_Pet(Requests[i].petID);
-            }
-            else
-                Requests[i].status = "Rejected";
-
-            cout << "Request " << Requests[i].status << " Successfully!\n";
-            cout << "==================================================================\n\n";
-            return;
-        }
-    }
-    if (!found)
-    {
-        cout << "Request Id Not Found";
-        cout << "==================================================================\n\n";
-    }
-}
 void Notify_Applicants()
 {
     for (int i = 0; i < requestCount; i++)
