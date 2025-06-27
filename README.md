@@ -1,1 +1,0 @@
-YARAB NKHLAS
